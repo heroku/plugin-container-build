@@ -4,12 +4,9 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {cli} from 'cli-ux'
 
+import {Tatara} from '../../tatara'
+
 const child = require('child_process');
-// const tty = require('tty');
-const fs = require('fs');
-const stream = require('stream');
-const os = require('os');
-const path = require('path');
 
 export default class Export extends Command {
   static description = 'Export a build to a Docker image'
@@ -25,10 +22,7 @@ $ heroku local:export`,
   async run () {
     const {flags} = this.parse(Export)
 
-    let bin = path.join(__dirname, '..', '..', '..', 'bin', `tatara-${os.platform()}`)
-    if (!fs.existsSync(bin)) {
-      this.error(`Unsupported platform: ${os.platform()}`);
-    }
+    let bin = (new Tatara(process.platform)).path()
 
     let cmdArgs = ['export', flags.app]
 

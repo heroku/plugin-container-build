@@ -31,7 +31,7 @@ async function download(url, file, callback) {
 
 const extension = getExtension();
 const version = process.argv[2];
-const file = `bin/tatara-${process.platform}`;
+const file = `bin/tatara-${extension}`;
 const url = `https://github.com/heroku/tatara/releases/download/v${version}/tatara-${version}-${extension}`;
 
 if (!fs.existsSync('bin')) fs.mkdirSync('bin');
