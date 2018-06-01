@@ -52,7 +52,6 @@
   "scripts": {
     "postinstall": "node scripts/download.js 0.1.4",
     "postpack": "rm -f oclif.manifest.json",
-    "posttest": "tsc -p test --noEmit && tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
     "prepare": "rm -rf lib && tsc",
     "test": "bash bin/test",
