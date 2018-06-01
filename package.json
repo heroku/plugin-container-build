@@ -34,7 +34,8 @@
   "files": [
     "/lib",
     "/oclif.manifest.json",
-    "/yarn.lock"
+    "/yarn.lock",
+    "/scripts"
   ],
   "homepage": "https://github.com/heroku/plugin-local-build",
   "keywords": [

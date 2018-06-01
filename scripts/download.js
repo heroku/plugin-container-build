@@ -34,6 +34,8 @@ const version = process.argv[2];
 const file = `bin/tatara-${process.platform}`;
 const url = `https://github.com/heroku/tatara/releases/download/v${version}/tatara-${version}-${extension}`;
 
+if (!fs.existsSync('bin')) fs.mkdirSync('bin');
+
 console.log(`Downloading ${file} from ${url}`)
 download(url, file, () => {
   fs.chmodSync(file, 0o765);
