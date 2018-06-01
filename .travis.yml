@@ -3,7 +3,6 @@ sudo: required
 dist: trusty
 node_js:
 - '9.11.1'
-before_install:
-- bash bin/ci
-script: "npm test"
+before_install: bash bin/ci
+script: bash bin/test
 after_script: heroku keys:remove $USER@`hostname`

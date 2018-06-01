@@ -2,7 +2,7 @@
   "name": "@heroku-cli/plugin-local-build",
   "description": "Use this plugin to build and run your app locally as a docker image/container.",
   "version": "0.1.0",
-  "author": "Joe Kutner @jkutner",
+  "author": "Joe Kutner @codefinger",
   "bugs": "https://github.com/heroku/plugin-local-build/issues",
   "dependencies": {
     "@heroku-cli/command": "^8.1.23",
@@ -54,7 +54,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
     "prepare": "rm -rf lib && tsc",
-    "test": "bash bin/test",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif-dev readme && git add README.md"
   }
 }

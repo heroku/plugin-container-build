@@ -33,11 +33,11 @@ $ heroku local:build`,
 
     let spawned = child.spawn(bin, cmdArgs, {stdio: 'pipe'})
       .on('error', (err: any) => {
-        cli.log(err)
-        this.error(err)
+        cli.debug(err)
+        this.error(`Failed to build ${flags.app}`)
       })
       .on('close', (code: any) => {
-        if (code) this.error(code);
+        if (code) this.error(`Failed to build ${flags.app}`)
       });
     spawned.stdout.on('data', (chunk: any) => {
       process.stdout.write(chunk.toString());
