@@ -17,6 +17,7 @@ $ heroku local:export`,
     remote: flags.remote(),
     app: flags.app({required: true}),
     tag: flags.string({description: 'the tag for the Docker image'}),
+    'skip-stack-pull': flags.boolean()
   }
 
   async run () {
@@ -30,7 +31,11 @@ $ heroku local:export`,
       cmdArgs.push('--tag')
       cmdArgs.push(flags.tag)
     }
+    if (flags['skip-stack-pull']) {
+      cmdArgs.push('--skip-stack-pull')
+    }
 
+    cli.debug(`Executing ${bin}`)
     let spawned = child.spawn(bin, cmdArgs, {stdio: 'pipe'})
       .on('error', (err: any) => {
         cli.log(err)

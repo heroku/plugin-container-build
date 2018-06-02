@@ -15,7 +15,8 @@ $ heroku local:run`,
   ]
   static flags = {
     remote: flags.remote(),
-    app: flags.app({required: true})
+    app: flags.app({required: true}),
+    'skip-stack-pull': flags.boolean()
   }
 
   async run () {
@@ -24,6 +25,9 @@ $ heroku local:run`,
     let bin = (new Tatara(process.platform)).path()
 
     let cmdArgs = ['run', flags.app]
+    if (flags['skip-stack-pull']) {
+      cmdArgs.push('--skip-stack-pull')
+    }
 
     let spawned = child.spawn(bin, cmdArgs, {stdio: 'pipe'})
       .on('error', (err: any) => {
