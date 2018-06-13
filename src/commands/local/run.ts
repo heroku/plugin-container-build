@@ -41,7 +41,7 @@ $ heroku local:run`,
       let envVars = await this.heroku.get<Heroku.App>(`/apps/${flags.app}/config-vars`)
       for (var name in envVars.body) {
         let value = envVars.body[name]
-        cmdArgs.push(`--env=${name}=${ShellEscape(value)}`)
+        cmdArgs.push(`--env=${name}=${ShellEscape([value])}`)
       }
     }
 
