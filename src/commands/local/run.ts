@@ -4,6 +4,7 @@ import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {cli} from 'cli-ux'
 import * as ShellEscape from 'shell-escape'
+import * as debug from 'debug'
 
 import {Tatara} from '../../tatara'
 
@@ -29,6 +30,10 @@ $ heroku local:run`,
     let cmdArgs = ['run', flags.app]
     if (flags['skip-stack-pull']) {
       cmdArgs.push('--skip-stack-pull')
+    }
+
+    if (debug('local:run').enabled) {
+      cmdArgs.push(`--debug`)
     }
 
     let envVars
