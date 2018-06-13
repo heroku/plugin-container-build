@@ -3,6 +3,8 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {cli} from 'cli-ux'
+import * as ShellEscape from 'shell-escape'
+import * as debug from 'debug'
 
 import {Tatara} from '../../tatara'
 
@@ -16,7 +18,8 @@ $ heroku local:run`,
   static flags = {
     remote: flags.remote(),
     app: flags.app({required: true}),
-    'skip-stack-pull': flags.boolean()
+    'skip-stack-pull': flags.boolean(),
+    config: flags.boolean()
   }
 
   async run () {
@@ -27,6 +30,19 @@ $ heroku local:run`,
     let cmdArgs = ['run', flags.app]
     if (flags['skip-stack-pull']) {
       cmdArgs.push('--skip-stack-pull')
+    }
+
+    if (debug('local:run').enabled) {
+      cmdArgs.push(`--debug`)
+    }
+
+    let envVars
+    if (flags.config) {
+      let envVars = await this.heroku.get<Heroku.App>(`/apps/${flags.app}/config-vars`)
+      for (var name in envVars.body) {
+        let value = envVars.body[name]
+        cmdArgs.push(`--env=${name}=${ShellEscape(value)}`)
+      }
     }
 
     let spawned = child.spawn(bin, cmdArgs, {stdio: 'pipe'})
