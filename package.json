@@ -1,7 +1,7 @@
 {
   "name": "@heroku-cli/plugin-local-build",
   "description": "Use this plugin to build and run your app locally as a docker image/container.",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": "Joe Kutner @codefinger",
   "bugs": "https://github.com/heroku/plugin-local-build/issues",
   "dependencies": {
