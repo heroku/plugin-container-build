@@ -2,10 +2,9 @@
 // this inherits from @oclif/command but extends it with Heroku-specific functionality
 import {Command, flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
+import * as execa from 'execa'
 
 import {Tatara} from '../../tatara'
-
-const child = require('child_process')
 
 export default class Export extends Command {
   static description = 'Export a build to a Docker image'
@@ -35,19 +34,6 @@ $ heroku local:export`,
     }
 
     cli.debug(`Executing ${bin}`)
-    let spawned = child.spawn(bin, cmdArgs, {stdio: 'pipe'})
-      .on('error', (err: any) => {
-        cli.log(err)
-        this.error(err)
-      })
-      .on('close', (code: any) => {
-        if (code) this.error(code)
-      })
-    spawned.stdout.on('data', (chunk: any) => {
-      process.stdout.write(chunk.toString())
-    })
-    spawned.stderr.on('data', (chunk: any) => {
-      process.stderr.write(chunk.toString())
-    })
+    execa(bin, cmdArgs, {stdio: 'inherit'})
   }
 }
