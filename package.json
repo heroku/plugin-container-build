@@ -46,6 +46,9 @@
     "oclif-plugin"
   ],
   "license": "MIT",
+  "tatara": {
+    "version": "0.1.7"
+  },
   "oclif": {
     "commands": "./lib/commands",
     "bin": "oclif-example",
@@ -55,7 +58,7 @@
   },
   "repository": "heroku/plugin-local-build",
   "scripts": {
-    "postinstall": "node scripts/download.js 0.1.7",
+    "postinstall": "node scripts/download.js",
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
     "prepare": "rm -rf lib && tsc",

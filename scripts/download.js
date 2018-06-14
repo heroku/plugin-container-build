@@ -30,13 +30,15 @@ async function download(url, file, callback) {
 
 
 const extension = getExtension();
-const version = process.argv[2];
-const file = `bin/tatara-${extension}`;
+const version = require('../package.json').tatara.version;
+const file = `bin/tatara-${version}-${extension}`;
 const url = `https://github.com/heroku/tatara/releases/download/v${version}/tatara-${version}-${extension}`;
 
 if (!fs.existsSync('bin')) fs.mkdirSync('bin');
 
-console.log(`Downloading ${file} from ${url}`)
-download(url, file, () => {
-  fs.chmodSync(file, 0o765);
-});
+if (!fs.existsSync(file)) {
+  console.log(`Downloading ${file} from ${url}`)
+  download(url, file, () => {
+    fs.chmodSync(file, 0o765);
+  });
+}
