@@ -4,5 +4,5 @@ dist: trusty
 node_js:
 - '9.11.1'
 before_install: bash bin/ci
-script: bash bin/test
+script: yarn test
 after_script: heroku keys:remove $USER@`hostname`
