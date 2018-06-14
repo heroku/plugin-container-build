@@ -55,7 +55,7 @@
   },
   "repository": "heroku/plugin-local-build",
   "scripts": {
-    "postinstall": "node scripts/download.js 0.1.6",
+    "postinstall": "node scripts/download.js 0.1.7",
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
     "prepare": "rm -rf lib && tsc",
