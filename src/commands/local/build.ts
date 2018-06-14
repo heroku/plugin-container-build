@@ -3,7 +3,6 @@
 import {Command, flags} from '@heroku-cli/command'
 import * as Heroku from '@heroku-cli/schema'
 import {cli} from 'cli-ux'
-import * as ShellEscape from 'shell-escape'
 import * as debug from 'debug'
 
 import {Tatara} from '../../tatara'
@@ -37,7 +36,7 @@ $ heroku local:build`,
       let envVars = await this.heroku.get<Heroku.App>(`/apps/${flags.app}/config-vars`)
       for (var name in envVars.body) {
         let value = envVars.body[name]
-        cmdArgs.push(`--env=${name}=${ShellEscape([value])}`)
+        cmdArgs.push(`--env=${name}=${value}`)
       }
     }
 
