@@ -1,6 +1,5 @@
 *-debug.log
 *-error.log
-heroku-cli-plugin-local-build-v*.tgz
 /.nyc_output
 /dist
 /lib
