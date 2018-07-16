@@ -10,7 +10,7 @@ import {Tatara} from '../../tatara'
 export default class Run extends Command {
   static description = 'Run a locally built app'
   static examples = [`
-$ heroku local:run`,
+$ heroku container:run`,
   ]
   static flags = {
     remote: flags.remote(),
@@ -18,6 +18,9 @@ $ heroku local:run`,
     'skip-stack-pull': flags.boolean(),
     config: flags.boolean()
   }
+  static args = [
+    {name: 'cmd', required: false}
+  ]
 
   async run() {
     const {flags} = this.parse(Run)
@@ -29,7 +32,7 @@ $ heroku local:run`,
       cmdArgs.push('--skip-stack-pull')
     }
 
-    if (debug('local:run').enabled) {
+    if (debug('container:run').enabled) {
       cmdArgs.push('--debug')
     }
 

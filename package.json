@@ -1,9 +1,9 @@
 {
-  "name": "@heroku-cli/plugin-local-build",
+  "name": "@heroku-cli/plugin-container-build",
   "description": "Use this plugin to build and run your app locally as a docker image/container.",
   "version": "0.1.9",
   "author": "Joe Kutner @codefinger",
-  "bugs": "https://github.com/heroku/plugin-local-build/issues",
+  "bugs": "https://github.com/heroku/plugin-container-build/issues",
   "dependencies": {
     "@heroku-cli/command": "^8.1.23",
     "@oclif/command": "^1",
@@ -43,7 +43,7 @@
     "/yarn.lock",
     "/scripts"
   ],
-  "homepage": "https://github.com/heroku/plugin-local-build",
+  "homepage": "https://github.com/heroku/plugin-container-build",
   "keywords": [
     "oclif-plugin"
   ],
@@ -58,7 +58,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "heroku/plugin-local-build",
+  "repository": "heroku/plugin-container-build",
   "scripts": {
     "postinstall": "node scripts/download.js",
     "postpack": "rm -f oclif.manifest.json",
