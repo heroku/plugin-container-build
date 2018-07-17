@@ -7,7 +7,7 @@ import * as debug from 'debug'
 
 import {Tatara} from '../../tatara'
 
-const child = require('child_process');
+const child = require('child_process')
 
 export default class Build extends Command {
   static description = 'Build an app locally'
@@ -21,7 +21,7 @@ $ heroku local:build`,
     config: flags.boolean()
   }
 
-  async run () {
+  async run() {
     const {flags} = this.parse(Build)
 
     let bin = (new Tatara(process.platform).path())
@@ -31,17 +31,15 @@ $ heroku local:build`,
       cmdArgs.push('--skip-stack-pull')
     }
 
-    let envVars
     if (flags.config) {
       let envVars = await this.heroku.get<Heroku.App>(`/apps/${flags.app}/config-vars`)
-      for (var name in envVars.body) {
-        let value = envVars.body[name]
-        cmdArgs.push(`--env=${name}=${value}`)
+      for (let [k, v] of Object.entries(envVars.body)) {
+        cmdArgs.push(`--env=${k}=${v}`)
       }
     }
 
     if (debug('local:build').enabled) {
-      cmdArgs.push(`--debug`)
+      cmdArgs.push('--debug')
     }
 
     cli.debug(`Executing ${bin}`)
@@ -52,12 +50,12 @@ $ heroku local:build`,
       })
       .on('close', (code: any) => {
         if (code) this.error(`Failed to build ${flags.app}`)
-      });
+      })
     spawned.stdout.on('data', (chunk: any) => {
-      process.stdout.write(chunk.toString());
-    });
+      process.stdout.write(chunk.toString())
+    })
     spawned.stderr.on('data', (chunk: any) => {
-      process.stderr.write(chunk.toString());
-    });
+      process.stderr.write(chunk.toString())
+    })
   }
 }
