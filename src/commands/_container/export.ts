@@ -26,8 +26,7 @@ $ heroku _container:export`,
     let cmdArgs = ['export', flags.app]
 
     if (flags.tag) {
-      cmdArgs.push('--tag')
-      cmdArgs.push(flags.tag)
+      cmdArgs.push(`--tag=${flags.tag}`)
     }
     if (flags['skip-stack-pull']) {
       cmdArgs.push('--skip-stack-pull')
