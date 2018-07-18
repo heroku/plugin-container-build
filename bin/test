@@ -77,12 +77,12 @@ heroku create ${app} $(if [ -n "$HEROKU_SPACE" ]; then echo "--space $HEROKU_SPA
 
 trap "{ cleanup ${app}; }" EXIT
 
-heroku local:build
+heroku container:build
 
 assert_exists "${app}.slug"
 assert_exists ".${app}.cache"
 
-eval "heroku local:run &"
+eval "heroku container:run &"
 trap "{ cleanup ${app} $!; }" EXIT
 
 sleep 5

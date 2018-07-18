@@ -11,7 +11,7 @@ import {Tatara} from '../../tatara'
 export default class Build extends Command {
   static description = 'Build an app locally'
   static examples = [`
-$ heroku local:build`,
+$ heroku containers:build`,
   ]
   static flags = {
     remote: flags.remote(),
@@ -37,7 +37,7 @@ $ heroku local:build`,
       }
     }
 
-    if (debug('local:build').enabled) {
+    if (debug('container:build').enabled) {
       cmdArgs.push('--debug')
     }
 

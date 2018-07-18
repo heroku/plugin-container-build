@@ -9,7 +9,7 @@ import {Tatara} from '../../tatara'
 export default class Export extends Command {
   static description = 'Export a build to a Docker image'
   static examples = [`
-$ heroku local:export`,
+$ heroku container:export`,
   ]
   static flags = {
     remote: flags.remote(),
