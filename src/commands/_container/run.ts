@@ -16,7 +16,7 @@ $ heroku _container:run`,
     remote: flags.remote(),
     app: flags.app({required: true}),
     'skip-stack-pull': flags.boolean(),
-    type: flags.string(),
+    type: flags.string({char: 't'}),
     config: flags.boolean()
   }
 
