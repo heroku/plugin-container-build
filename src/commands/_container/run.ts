@@ -20,12 +20,28 @@ $ heroku _container:run`,
     config: flags.boolean()
   }
 
+  static args = [
+    {
+      name: 'command',
+      required: false,
+    }
+  ]
+
   async run() {
-    const {flags} = this.parse(Run)
+    const {args, flags} = this.parse(Run)
 
     let bin = (new Tatara(process.platform)).path()
 
     let cmdArgs = ['run', flags.app]
+
+    if (args.command) {
+      if (args.command === 'bash') {
+        cmdArgs.push('--shell')
+      } else {
+        throw new Error('Custom run commands are not yet supported!')
+      }
+    }
+
     if (flags['skip-stack-pull']) {
       cmdArgs.push('--skip-stack-pull')
     }
