@@ -26,14 +26,13 @@ $ heroku _container:export`,
     let cmdArgs = ['export', flags.app]
 
     if (flags.tag) {
-      cmdArgs.push('--tag')
-      cmdArgs.push(flags.tag)
+      cmdArgs.push(`--tag=${flags.tag}`)
     }
     if (flags['skip-stack-pull']) {
       cmdArgs.push('--skip-stack-pull')
     }
 
     cli.debug(`Executing ${bin}`)
-    execa(bin, cmdArgs, {stdio: 'inherit'})
+    await execa(bin, cmdArgs, {stdio: 'inherit'})
   }
 }
