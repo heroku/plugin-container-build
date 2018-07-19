@@ -12,22 +12,16 @@ export default class Run extends Command {
   static examples = [`
 $ heroku _container:run`,
   ]
-  static args = [
-    {
-      name: 'process-type',
-      required: false,
-      description: 'The process type to run',
-    },
-  ]
   static flags = {
     remote: flags.remote(),
     app: flags.app({required: true}),
     'skip-stack-pull': flags.boolean(),
+    type: flags.string(),
     config: flags.boolean()
   }
 
   async run () {
-    let {args, flags} = this.parse(Run)
+    let {flags} = this.parse(Run)
 
     let bin = (new Tatara(process.platform)).path()
 
@@ -36,8 +30,8 @@ $ heroku _container:run`,
       cmdArgs.push('--skip-stack-pull')
     }
 
-    if (args['process-type']) {
-      cmdArgs.push(`--process-type=${args['process-type']}`)
+    if (flags['type']) {
+      cmdArgs.push(`--process-type=${flags['type']}`)
     }
 
     if (debug('_container:run').enabled) {
