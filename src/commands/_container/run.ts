@@ -20,8 +20,8 @@ $ heroku _container:run`,
     config: flags.boolean()
   }
 
-  async run () {
-    let {flags} = this.parse(Run)
+  async run() {
+    const {flags} = this.parse(Run)
 
     let bin = (new Tatara(process.platform)).path()
 
@@ -30,8 +30,8 @@ $ heroku _container:run`,
       cmdArgs.push('--skip-stack-pull')
     }
 
-    if (flags['type']) {
-      cmdArgs.push(`--process-type=${flags['type']}`)
+    if (flags.type) {
+      cmdArgs.push(`--process-type=${flags.type}`)
     }
 
     if (debug('_container:run').enabled) {
