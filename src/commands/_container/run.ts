@@ -16,11 +16,9 @@ $ heroku _container:run`,
     remote: flags.remote(),
     app: flags.app({required: true}),
     'skip-stack-pull': flags.boolean(),
+    type: flags.string(),
     config: flags.boolean()
   }
-  static args = [
-    {name: 'cmd', required: false}
-  ]
 
   async run() {
     const {flags} = this.parse(Run)
@@ -30,6 +28,10 @@ $ heroku _container:run`,
     let cmdArgs = ['run', flags.app]
     if (flags['skip-stack-pull']) {
       cmdArgs.push('--skip-stack-pull')
+    }
+
+    if (flags.type) {
+      cmdArgs.push(`--process-type=${flags.type}`)
     }
 
     if (debug('_container:run').enabled) {
