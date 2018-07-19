@@ -33,6 +33,6 @@ $ heroku _container:export`,
     }
 
     cli.debug(`Executing ${bin}`)
-    execa(bin, cmdArgs, {stdio: 'inherit'})
+    await execa(bin, cmdArgs, {stdio: 'inherit'})
   }
 }
