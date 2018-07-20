@@ -69,6 +69,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
     "prepare": "rm -rf lib && tsc",
+    "test": "echo 1",
     "posttest": "tslint -p .",
     "version": "oclif-dev readme && git add README.md"
   }
