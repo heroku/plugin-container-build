@@ -32,6 +32,10 @@ $ heroku _container:export`,
       cmdArgs.push('--skip-stack-pull')
     }
 
+    if (debug('_container:export').enabled) {
+      cmdArgs.push('--debug')
+    }
+
     cli.debug(`Executing ${bin}`)
     await execa(bin, cmdArgs, {stdio: 'inherit'})
   }
