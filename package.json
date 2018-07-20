@@ -54,7 +54,7 @@
   ],
   "license": "MIT",
   "tatara": {
-    "version": "0.1.7"
+    "version": "0.1.8"
   },
   "oclif": {
     "commands": "./lib/commands",
