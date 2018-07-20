@@ -16,7 +16,9 @@
     "http-call": "^5.1.4",
     "inquirer": "^6.0.0",
     "node-fetch": "^2.1.2",
-    "tslib": "^1"
+    "parse-procfile": "^0.0.2",
+    "tslib": "^1",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "@heroku-cli/schema": "^1.0.5",

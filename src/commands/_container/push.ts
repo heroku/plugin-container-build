@@ -10,6 +10,8 @@ import Export from './export'
 const fs = require('fs')
 const Sanbashi = require('../../sanbashi')
 const streamer = require('../../streamer')
+const procfileParse = require('parse-procfile')
+const YAML = require('yamljs')
 
 type ReleaseBody = {
   addon_plan_names: [string],
@@ -32,6 +34,10 @@ type ReleaseBody = {
   output_stream_url?: string,
 }
 
+type ProcessTypes = {
+  [property: string]: string
+}
+
 export default class Push extends Command {
   static description = 'Deploy an app'
   static examples = [`
@@ -46,9 +52,6 @@ $ heroku _container:push`,
   async run() {
     const {flags} = this.parse(Push)
 
-    let processType = 'web'
-    let registryImage = `registry.heroku.com/${flags.app}/${processType}`
-
     // build
     if (!fs.existsSync(`${flags.app}.slug`)) {
       cli.styledHeader(`No slug detected, building slug for ${flags.app}`)
@@ -60,33 +63,52 @@ $ heroku _container:push`,
     }
 
     // export
-    let exportArgs = [`--tag=${registryImage}`]
+    let exportArgs = []
     if (flags['skip-stack-pull']) {
       exportArgs.push('--skip-stack-pull')
     }
-    cli.styledHeader(`Export docker image ${processType} for ${flags.app}`)
+    cli.styledHeader(`Export docker image for ${flags.app}`)
     await Export.run(exportArgs)
 
-    // push
-    cli.styledHeader(`Pushing ${processType} for ${flags.app}`)
-    await Sanbashi.pushImage(registryImage)
-
-    // release
-    let imageID = await Sanbashi.imageID(registryImage)
-    let updateData = [{
-      type: processType,
-      docker_image: imageID
-    }]
-
-    cli.styledHeader(`Releasing image ${processType} to ${flags.app}`)
-    cli.action.start('Releasing')
-    await this.heroku.patch(`/apps/${flags.app}/formation`, {
-      body: {updates: updateData},
-      headers: {
-        Accept: 'application/vnd.heroku+json; version=3.docker-releases'
+    await Sanbashi.cmd('tar', ['-xf', `${flags.app}.slug`, './app/release.yml'])
+    let processes: ProcessTypes = {}
+    let releaseYml = YAML.load('app/release.yml')
+    for (let processType in releaseYml.default_process_types) {
+      processes[processType] = ''
+    }
+    if (fs.existsSync('Procfile')) {
+      let procfile = procfileParse(fs.readFileSync('Procfile', 'utf8'))
+      for (let processType in procfile) {
+        processes[processType] = ''
       }
-    })
-    cli.action.stop()
+    }
+
+    for (let processType in processes) {
+      let registryImage = `registry.heroku.com/${flags.app}/${processType}`
+      cli.log(`Tagging ${registryImage}`)
+      Sanbashi.tag(flags.app, registryImage)
+
+      // push
+      cli.styledHeader(`Pushing ${processType} for ${flags.app}`)
+      await Sanbashi.pushImage(registryImage)
+
+      // release
+      let imageID = await Sanbashi.imageID(registryImage)
+      let updateData = [{
+        type: processType,
+        docker_image: imageID
+      }]
+
+      cli.styledHeader(`Releasing image ${processType} to ${flags.app}`)
+      cli.action.start('Releasing')
+      await this.heroku.patch(`/apps/${flags.app}/formation`, {
+        body: {updates: updateData},
+        headers: {
+          Accept: 'application/vnd.heroku+json; version=3.docker-releases'
+        }
+      })
+      cli.action.stop()
+    }
 
     let release: ReleaseBody = await this.heroku.request(`/apps/${flags.app}/releases`, {
       partial: true,

@@ -128,6 +128,11 @@ Sanbashi.imageID = function (tag) {
     .then(id => id.trimRight()) // Trim the new line at the end of the string
 }
 
+Sanbashi.tag = function (source, target) {
+  return Sanbashi
+    .cmd('docker', ['tag', source, target])
+}
+
 Sanbashi.cmd = function (cmd, args, options = {}) {
   debug(cmd, args)
   let stdio = [process.stdin, process.stdout, process.stderr]
