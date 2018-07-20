@@ -2,6 +2,7 @@
 // this inherits from @oclif/command but extends it with Heroku-specific functionality
 import {Command, flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
+import * as debug from 'debug'
 import {HTTP} from 'http-call'
 
 import Build from './build'
@@ -84,13 +85,22 @@ $ heroku _container:push`,
     }
 
     for (let processType in processes) {
+      cli.styledHeader(`Deploying process '${processType}'`)
       let registryImage = `registry.heroku.com/${flags.app}/${processType}`
-      cli.log(`Tagging ${registryImage}`)
-      Sanbashi.tag(flags.app, registryImage)
+      cli.action.start(`Tagging image ${registryImage}`)
+      await Sanbashi.tag(flags.app, registryImage)
+      cli.action.stop()
 
       // push
-      cli.styledHeader(`Pushing ${processType} for ${flags.app}`)
-      await Sanbashi.pushImage(registryImage)
+      let pushMessage = `Pushing ${processType}`
+      if (debug('_container:push').enabled) {
+        cli.log(pushMessage)
+        await Sanbashi.pushImage(registryImage, {output: false})
+      } else {
+        cli.action.start(pushMessage)
+        await Sanbashi.pushImage(registryImage, {output: true})
+        cli.action.stop()
+      }
 
       // release
       let imageID = await Sanbashi.imageID(registryImage)
@@ -99,8 +109,7 @@ $ heroku _container:push`,
         docker_image: imageID
       }]
 
-      cli.styledHeader(`Releasing image ${processType} to ${flags.app}`)
-      cli.action.start('Releasing')
+      cli.action.start(`Releasing ${processType}`)
       await this.heroku.patch(`/apps/${flags.app}/formation`, {
         body: {updates: updateData},
         headers: {
@@ -116,8 +125,9 @@ $ heroku _container:push`,
     }).then((releases: HTTP<any>): ReleaseBody => releases.body[0])
 
     if (release.output_stream_url && release.status === 'pending') {
-      cli.log('Running release command...')
+      cli.action.start('Running release command')
       await streamer(release.output_stream_url, process.stdout)
+      cli.action.stop()
     }
   }
 }

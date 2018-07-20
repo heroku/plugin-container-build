@@ -95,9 +95,9 @@ Sanbashi.buildImage = function (dockerfile, resource, buildArg, path) {
   return Sanbashi.cmd('docker', args)
 }
 
-Sanbashi.pushImage = function (resource) {
+Sanbashi.pushImage = function (resource, options = {}) {
   let args = ['push', resource]
-  return Sanbashi.cmd('docker', args)
+  return Sanbashi.cmd('docker', args, options)
 }
 
 Sanbashi.pullImage = function (resource) {
