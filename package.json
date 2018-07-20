@@ -44,7 +44,6 @@
   },
   "files": [
     "/lib",
-    "/src",
     "/oclif.manifest.json",
     "/yarn.lock",
     "/scripts"
@@ -71,7 +70,7 @@
   "scripts": {
     "postinstall": "node scripts/download.js",
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
+    "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme && cp src/*.js lib/",
     "prepare": "rm -rf lib && tsc",
     "test": "echo 1",
     "posttest": "tslint -p .",
