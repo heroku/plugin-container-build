@@ -17,6 +17,7 @@
     "inquirer": "^6.0.0",
     "node-fetch": "^2.1.2",
     "parse-procfile": "^0.0.2",
+    "tmp-promise": "^1.0.5",
     "tslib": "^1",
     "yamljs": "^0.3.0"
   },

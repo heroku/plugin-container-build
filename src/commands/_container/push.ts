@@ -12,7 +12,11 @@ const fs = require('fs')
 const Sanbashi = require('../../sanbashi')
 const streamer = require('../../streamer')
 const procfileParse = require('parse-procfile')
+const tmp = require('tmp-promise')
 const YAML = require('yamljs')
+
+// cleanup tmp files even if an exception is caught
+tmp.setGracefulCleanup();
 
 type ReleaseBody = {
   addon_plan_names: [string],
@@ -73,9 +77,11 @@ $ heroku _container:push`,
     cli.styledHeader(`Export docker image for ${flags.app}`)
     await Export.run(exportArgs)
 
-    await Sanbashi.cmd('tar', ['-xf', `${flags.app}.slug`, './app/release.yml'])
+    let tmpdir = tmp.dirSync({unsafeCleanup: true})
+    await Sanbashi.cmd('tar', [`--directory=${tmpdir.name}`, '-xf', `${flags.app}.slug`, './app/release.yml'])
     let processes: ProcessTypes = {}
-    let releaseYml = YAML.load('app/release.yml')
+    let releaseYml = YAML.load(`${tmpdir.name}/app/release.yml`)
+    tmpdir.removeCallback()
     Object.keys(releaseYml.default_process_types).forEach((processType: string) => {
       processes[processType] = ''
     })
