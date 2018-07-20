@@ -44,6 +44,7 @@
   },
   "files": [
     "/lib",
+    "/src",
     "/oclif.manifest.json",
     "/yarn.lock",
     "/scripts"

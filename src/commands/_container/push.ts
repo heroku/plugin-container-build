@@ -9,8 +9,8 @@ import Build from './build'
 import Export from './export'
 
 const fs = require('fs')
-const Sanbashi = require('../../sanbashi')
-const streamer = require('../../streamer')
+const Sanbashi = require('../../../src/sanbashi')
+const streamer = require('../../../src/streamer')
 const procfileParse = require('parse-procfile')
 const tmp = require('tmp-promise')
 const YAML = require('yamljs')
