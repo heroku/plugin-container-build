@@ -16,7 +16,7 @@ const tmp = require('tmp-promise')
 const YAML = require('yamljs')
 
 // cleanup tmp files even if an exception is caught
-tmp.setGracefulCleanup();
+tmp.setGracefulCleanup()
 
 type ReleaseBody = {
   addon_plan_names: [string],
