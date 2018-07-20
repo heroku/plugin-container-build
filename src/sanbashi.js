@@ -95,9 +95,9 @@ Sanbashi.buildImage = function (dockerfile, resource, buildArg, path) {
   return Sanbashi.cmd('docker', args)
 }
 
-Sanbashi.pushImage = function (resource) {
+Sanbashi.pushImage = function (resource, options = {}) {
   let args = ['push', resource]
-  return Sanbashi.cmd('docker', args)
+  return Sanbashi.cmd('docker', args, options)
 }
 
 Sanbashi.pullImage = function (resource) {
@@ -128,6 +128,11 @@ Sanbashi.imageID = function (tag) {
     .then(id => id.trimRight()) // Trim the new line at the end of the string
 }
 
+Sanbashi.tag = function (source, target) {
+  return Sanbashi
+    .cmd('docker', ['tag', source, target])
+}
+
 Sanbashi.cmd = function (cmd, args, options = {}) {
   debug(cmd, args)
   let stdio = [process.stdin, process.stdout, process.stderr]
@@ -137,6 +142,9 @@ Sanbashi.cmd = function (cmd, args, options = {}) {
   if (options.output) {
     stdio[1] = 'pipe'
   }
+  if (options.error) {
+    stdio[2] = 'pipe'
+  }
 
   return new Promise((resolve, reject) => {
     let child = Child.spawn(cmd, args, {stdio: stdio})
@@ -145,15 +153,27 @@ Sanbashi.cmd = function (cmd, args, options = {}) {
       child.stdin.end(options.input)
     }
     let stdout
+    let stderr
     if (child.stdout) {
       stdout = ''
       child.stdout.on('data', (data) => {
         stdout += data.toString()
       })
     }
+    if (child.stderr) {
+      stderr = ''
+      child.stderr.on('data', (data) => {
+        stderr += data.toString()
+      })
+    }
     child.on('exit', (code, signal) => {
-      if (signal || code) reject(signal || code)
-      else resolve(stdout)
+      if (signal || code) {
+        let error = {
+          code: signal || code,
+          error: stderr
+        }
+        reject(error)
+      } else resolve(stdout)
     })
   })
 }
