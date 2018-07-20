@@ -2,6 +2,7 @@
 // this inherits from @oclif/command but extends it with Heroku-specific functionality
 import {Command, flags} from '@heroku-cli/command'
 import {cli} from 'cli-ux'
+import * as debug from 'debug'
 import * as execa from 'execa'
 
 import {Tatara} from '../../tatara'
