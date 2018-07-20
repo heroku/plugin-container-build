@@ -76,20 +76,21 @@ $ heroku _container:push`,
     await Sanbashi.cmd('tar', ['-xf', `${flags.app}.slug`, './app/release.yml'])
     let processes: ProcessTypes = {}
     let releaseYml = YAML.load('app/release.yml')
-    for (let processType in releaseYml.default_process_types) {
+    Object.keys(releaseYml.default_process_types).forEach((processType: string) => {
       processes[processType] = ''
-    }
+    })
     if (fs.existsSync('Procfile')) {
       let procfile = procfileParse(fs.readFileSync('Procfile', 'utf8'))
-      for (let processType in procfile) {
+      Object.keys(procfile).forEach((processType: string) => {
         processes[processType] = ''
-      }
+      })
     }
 
     // only try to login on the first push
     let firstRun = true
+    let processTypes = Object.keys(processes)
 
-    for (let processType in processes) {
+    for (let processType of processTypes) {
       cli.styledHeader(`Deploying process '${processType}'`)
       let registryImage = `${registry}/${flags.app}/${processType}`
       cli.action.start(`Tagging image '${registryImage}'`)
@@ -109,9 +110,9 @@ $ heroku _container:push`,
       try {
         await Sanbashi.pushImage(registryImage, pushOptions)
       } catch (err) {
-        if (firstRun && err.error.includes("no basic auth credentials")) {
+        if (firstRun && err.error.includes('no basic auth credentials')) {
           // docker login
-          cli.action.start("Not logged into the registry, trying to login")
+          cli.action.start('Not logged into the registry, trying to login')
           let password = this.heroku.auth
           if (!password) throw new Error('not logged in')
 
@@ -136,7 +137,7 @@ $ heroku _container:push`,
               await Sanbashi.cmd('docker', args, {output: true})
             }
           } catch (err) {
-            cli.error(`Error: docker login exited with ${err}`, 1)
+            cli.error(`Error: docker login exited with ${err}`)
           }
           cli.action.stop()
 
