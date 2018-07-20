@@ -53,6 +53,8 @@ $ heroku _container:push`,
   async run() {
     const {flags} = this.parse(Push)
 
+    let registry = 'registry.heroku.com'
+
     // build
     if (!fs.existsSync(`${flags.app}.slug`)) {
       cli.styledHeader(`No slug detected, building slug for ${flags.app}`)
@@ -84,23 +86,69 @@ $ heroku _container:push`,
       }
     }
 
+    // only try to login on the first push
+    let firstRun = true
+
     for (let processType in processes) {
       cli.styledHeader(`Deploying process '${processType}'`)
-      let registryImage = `registry.heroku.com/${flags.app}/${processType}`
-      cli.action.start(`Tagging image ${registryImage}`)
+      let registryImage = `${registry}/${flags.app}/${processType}`
+      cli.action.start(`Tagging image '${registryImage}'`)
       await Sanbashi.tag(flags.app, registryImage)
       cli.action.stop()
 
       // push
       let pushMessage = `Pushing ${processType}`
-      if (debug('_container:push').enabled) {
-        cli.log(pushMessage)
-        await Sanbashi.pushImage(registryImage, {output: false})
-      } else {
-        cli.action.start(pushMessage)
-        await Sanbashi.pushImage(registryImage, {output: true})
-        cli.action.stop()
+      let pushOptions = {
+        output: true,
+        error: true
       }
+      if (debug('_container:push').enabled) {
+        pushOptions.output = false
+      }
+      cli.action.start(pushMessage)
+      try {
+        await Sanbashi.pushImage(registryImage, pushOptions)
+      } catch (err) {
+        if (firstRun && err.error.includes("no basic auth credentials")) {
+          // docker login
+          cli.action.start("Not logged into the registry, trying to login")
+          let password = this.heroku.auth
+          if (!password) throw new Error('not logged in')
+
+          let [major, minor] = await Sanbashi.version()
+
+          try {
+            if (major > 17 || (major === 17 && minor >= 7)) {
+              let args = [
+                'login',
+                '--username=_',
+                '--password-stdin',
+                registry
+              ]
+              await Sanbashi.cmd('docker', args, {input: password, output: true})
+            } else {
+              let args = [
+                'login',
+                '--username=_',
+                `--password=${password}`,
+                registry
+              ]
+              await Sanbashi.cmd('docker', args, {output: true})
+            }
+          } catch (err) {
+            cli.error(`Error: docker login exited with ${err}`, 1)
+          }
+          cli.action.stop()
+
+          // attempt to push again
+          cli.action.start(pushMessage)
+          await Sanbashi.pushImage(registryImage, {output: true, error: true})
+          cli.action.stop()
+        } else {
+          throw new Error(err.error)
+        }
+      }
+      cli.action.stop()
 
       // release
       let imageID = await Sanbashi.imageID(registryImage)
@@ -117,6 +165,8 @@ $ heroku _container:push`,
         }
       })
       cli.action.stop()
+
+      firstRun = false
     }
 
     let release: ReleaseBody = await this.heroku.request(`/apps/${flags.app}/releases`, {
