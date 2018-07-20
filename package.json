@@ -69,7 +69,6 @@
     "postpack": "rm -f oclif.manifest.json",
     "prepack": "rm -rf lib && tsc && oclif-dev manifest && oclif-dev readme",
     "prepare": "rm -rf lib && tsc",
-    "test": "bash bin/test && nyc mocha --forbid-only \"test/**/*.test.ts\"",
     "posttest": "tslint -p .",
     "version": "oclif-dev readme && git add README.md"
   }
