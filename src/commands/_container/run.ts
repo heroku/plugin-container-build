@@ -17,7 +17,8 @@ $ heroku _container:run`,
     app: flags.app({required: true}),
     'skip-stack-pull': flags.boolean(),
     type: flags.string({char: 't'}),
-    config: flags.boolean()
+    config: flags.boolean(),
+    port: flags.integer()
   }
 
   static args = [
@@ -44,6 +45,10 @@ $ heroku _container:run`,
 
     if (flags['skip-stack-pull']) {
       cmdArgs.push('--skip-stack-pull')
+    }
+
+    if (flags.port) {
+      cmdArgs.push(`--port=${flags.port}`)
     }
 
     if (flags.type) {
