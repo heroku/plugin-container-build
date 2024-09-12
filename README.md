@@ -1,4 +1,10 @@
-# Heroku CLI Plugin for container build and run
+# DEPRECATED
+
+This repository is deprecated and will no longer be maintained.
+
+Container commands can now be found in the [core CLI](https://github.com/heroku/cli).
+
+## Heroku CLI Plugin for container build and run
 
 [![Build Status](https://travis-ci.org/heroku/plugin-container-build.svg?branch=master)](https://travis-ci.org/heroku/plugin-container-build)
 [![Version](https://img.shields.io/npm/v/@heroku-cli/plugin-local-build.svg)](https://npmjs.org/package/@heroku-cli/plugin-local-build)
@@ -6,7 +12,7 @@
 
 Use this plugin to build and run your app locally as a docker image/container.
 
-## Usage
+### Usage
 
 ```sh-session
 $ heroku plugins:install container-build
