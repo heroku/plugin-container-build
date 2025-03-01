@@ -8,7 +8,9 @@
     "rootDirs": [ "./src" ],
     "strict": true,
     "target": "es2017",
-    "typeRoots": [ "./node_modules/@types" ]
+    "typeRoots": [ "./node_modules/@types" ],
+    "skipLibCheck": true,
+    "useUnknownInCatchVariables": false
   },
   "include": [
     "./src/**/*"
